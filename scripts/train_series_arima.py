@@ -73,4 +73,34 @@ plt.title("Stationary Series")
 plt.show()
 
 
+train_data['count_log'] = np.log(train_data['count'])
+train_data['count_log_diff'] = train_data['count_log'] - train_data['count_log'].shift(1)
 
+plt.figure(figsize=(12,8))
+
+plt.plot(train_data.index,train_data['count_log_diff'], label='stationary series')
+plt.legend(loc='best')
+plt.title("Stationary Series")
+plt.show()
+
+adf_test(train_data['count_log_diff'].dropna())
+
+kpss_test(train_data['count_log_diff'].dropna())
+
+# ACF and PACF plots
+
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+
+plot_acf(train_data['count_log_diff'].dropna(), lags=15)
+plot_pacf(train_data['count_log_diff'].dropna(), lags=15)
+plt.show()
+
+
+'''
+   - p value is the lag value where the PACF chart crosses the confidence interval for the first time. It can be noticed that in this case p=2.
+
+   - q value is the lag value where the ACF chart crosses the confidence interval for the first time. It can be noticed that in this case q=2.
+
+   - Now we will make the ARIMA model as we have the p,q values.
+
+'''
